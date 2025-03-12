@@ -1,4 +1,4 @@
-const API_KEY = "FPSX07291e4267744c0183fe22e277bfc9f6";
+const API_KEY = "YOUR_FREEPIK_API_KEY";
 const generateBtn = document.getElementById("generateBtn");
 const imageContainer = document.getElementById("imageContainer");
 const loading = document.getElementById("loading");
@@ -19,9 +19,7 @@ async function fetchImage(prompt) {
 
         if (data && data.images) {
             data.images.forEach(imgUrl => {
-                const img = document.createElement("img");
-                img.src = imgUrl;
-                imageContainer.appendChild(img);
+                displayImage(prompt, imgUrl, imageContainer);
                 saveToHistory(prompt, imgUrl);
             });
         } else {
@@ -31,6 +29,35 @@ async function fetchImage(prompt) {
         loading.style.display = "none";
         alert("Error fetching image: " + error.message);
     }
+}
+
+// Function to create image element with download button
+function displayImage(prompt, imgUrl, container) {
+    const imageItem = document.createElement("div");
+    imageItem.classList.add("image-item");
+
+    const img = document.createElement("img");
+    img.src = imgUrl;
+    img.alt = prompt;
+
+    const downloadBtn = document.createElement("button");
+    downloadBtn.classList.add("download-btn");
+    downloadBtn.textContent = "Download";
+    downloadBtn.onclick = () => downloadImage(imgUrl, prompt);
+
+    imageItem.appendChild(img);
+    imageItem.appendChild(downloadBtn);
+    container.appendChild(imageItem);
+}
+
+// Function to download image
+function downloadImage(imgUrl, prompt) {
+    const a = document.createElement("a");
+    a.href = imgUrl;
+    a.download = prompt.replace(/\s+/g, "_") + ".jpg";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 // Event listener for button click
